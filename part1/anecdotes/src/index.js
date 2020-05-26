@@ -7,6 +7,15 @@ const Button = ({handleClick, text}) => {
   )
 }
 
+const BestAnecdote = (props) => {
+  return (
+    <>
+    <h1>Anecdote with the most votes</h1>
+    <p>{anecdotes[props.best]}</p>
+    </>
+  )
+}
+
 const App = (props) => {
   const [selected, setSelected] = useState(0);
   const [points, setPoints] = useState(Array(anecdotes.length).fill(0));
@@ -24,13 +33,19 @@ const App = (props) => {
     console.log(newPoints);
   } 
 
+  const indexOfMax = (arr) => {
+    return arr.indexOf(arr.reduce((a,b) => Math.max(a,b)));
+  }
+
   return (
     <div>
+      <h1>Anecdote of the day</h1>
       {props.anecdotes[selected]}
       <div>
         <Button handleClick={ () => setVote()} text='vote' />
         <Button handleClick={ () => getRandomAnecdote()} text='next anecdote' />
       </div>
+      <BestAnecdote best={indexOfMax(points)} />
     </div>
   )
 }
