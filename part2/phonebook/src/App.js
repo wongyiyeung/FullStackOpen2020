@@ -16,7 +16,19 @@ const App = () => {
 
   const submitNewContact = (event) => {
     event.preventDefault()
+
+    const newContact = {name: newName};
+
+    for(let i=0; i<persons.length; ++i){
+      if(persons[i].name === newContact.name){
+        window.alert(`${newContact.name} is already added to phonebook`);
+        setNewName('');
+        return;
+      }
+    }
+
     setPersons(persons.concat({name: newName}))
+    setNewName('');
   }
 
   const changeName = (event) => {
