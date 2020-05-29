@@ -1,6 +1,32 @@
 import React, { useState } from 'react'
 
-const Numbers = ({contactList, filter}) => {
+const Filter = ({onChange, value}) => {
+  return (
+    <form>
+      <div>
+        filter shown with <input onChange={onChange} value={value}/> 
+      </div>
+    </form>
+  )
+}
+
+const PersonForm = ({submitHandler, nameChangeHandler, numberChangeHandler, newName, newNumber}) => {
+  return (
+    <form onSubmit={submitHandler}>
+    <div>
+      name: <input onChange={nameChangeHandler} value={newName}/>
+    </div>
+    <div>
+      number: <input onChange={numberChangeHandler} value={newNumber}/>
+    </div>
+    <div>
+      <button type="submit">add</button>
+    </div>
+  </form>
+  )
+}
+
+const Persons = ({contactList, filter}) => {
   const filteredContacts = contactList.filter(person => person.name.slice(0, filter.length).localeCompare(filter, 'en', {sensitivity: 'accent'}) === 0);
   return (
   <>
@@ -56,25 +82,11 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
-        <form>
-          <div>
-            filter shown with <input onChange={changeFilter} value={filterName}/> 
-          </div>
-        </form>
+      <Filter onChange={changeFilter} value={filterName}/>
       <h2>Add new contact</h2>
-      <form onSubmit={submitNewContact}>
-        <div>
-          name: <input onChange={changeName} value={newName}/>
-        </div>
-        <div>
-          number: <input onChange={changeNumber} value={newNumber}/>
-        </div>
-        <div>
-          <button type="submit">add</button>
-        </div>
-      </form>
+      <PersonForm submitHandler={submitNewContact} nameChangeHandler={changeName} numberChangeHandler={changeNumber} newName={newName} newNumber={newNumber} />
       <h2>Numbers</h2>
-      <Numbers contactList={persons} filter={filterName}/>
+      <Persons contactList={persons} filter={filterName}/>
     </div>
   )
 }
