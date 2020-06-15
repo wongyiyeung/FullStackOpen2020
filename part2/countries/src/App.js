@@ -2,6 +2,49 @@ import React, { useState, useEffect } from 'react';
 
 import axios from 'axios';
 
+const CountryElement = ({country}) => {
+  const [showDetail, setShowDetail] = useState(false);
+
+  const buttonHandler = () => {
+    setShowDetail(!showDetail);
+  }
+
+  if(showDetail === false) {
+    return (
+      <>
+        <div>
+          {country.name}<button onClick={buttonHandler}>show</button>
+        </div>
+      </>
+    );
+  }
+  else {
+    return  (
+      <>
+        {country.name}<button onClick={buttonHandler}>hide</button>
+        <DetailedCountryElement country={country} />
+      </>
+    )
+  }
+
+}
+
+const DetailedCountryElement = ({country}) => {
+  return (
+    <>
+      <h1>{country.name}</h1>
+      <p>capital {country.capital}</p>
+      <p>population {country.population}</p>
+
+      <h2>languages</h2>
+      <ul>
+        {country.languages.map(lang => <li key={lang.name}>{lang.name}</li> )}
+      </ul>
+      <img src={country.flag} />
+    </>
+  );
+}
+
 const CountryList = ({countries, filter}) => {
   const foundCountries = countries.filter(country => country.name.slice(0, filter.length).localeCompare(filter, 'en', {sensitivity: 'accent'}) === 0);
   
@@ -11,18 +54,9 @@ const CountryList = ({countries, filter}) => {
     );
   }
   else if(foundCountries.length === 1){
-    const country = foundCountries[0];
     return (
       <>
-        <h1>{country.name}</h1>
-        <p>capital {country.capital}</p>
-        <p>population {country.population}</p>
-
-        <h2>languages</h2>
-        <ul>
-          {country.languages.map(lang => <li key={lang.name}>{lang.name}</li> )}
-        </ul>
-        <img src={country.flag} />
+        <DetailedCountryElement country={foundCountries[0]} />
       </>
     );
   }
@@ -36,7 +70,7 @@ const CountryList = ({countries, filter}) => {
   }
   return (
     <>
-      {foundCountries.map(country => <p key={country.name}>{country.name}</p> )}
+      {foundCountries.map(country => <CountryElement key={country.callingCodes} country={country} /> )}
     </>
   );
 }
