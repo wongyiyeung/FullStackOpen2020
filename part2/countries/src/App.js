@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
-
 import axios from 'axios';
+
+const weather_api_key = process.env.REACT_APP_WEATHERSTACK_API_KEY
 
 const CountryElement = ({country}) => {
   const [showDetail, setShowDetail] = useState(false);
@@ -30,6 +31,27 @@ const CountryElement = ({country}) => {
 }
 
 const DetailedCountryElement = ({country}) => {
+  const [temperature, setTemperature] = useState(0);
+  const [wind_speed, setWindspeed] = useState(0);
+  const [wind_direction, setWindDirection] = useState('');
+
+  useEffect(()=>{
+    axios
+      .get(`https://api.weatherstack.com/current`, 
+      {
+        header: {
+          access_key: weather_api_key,
+          query: country.name
+        }
+      })
+      .then(response => {
+        console.log(response.data);
+        setTemperature(response.data.current.temperature);
+        setWindspeed(response.data.current.wind_speed);
+        setWindDirection(response.data.current.wind_dir);
+      })
+  },[]);
+  
   return (
     <>
       <h1>{country.name}</h1>
@@ -41,6 +63,10 @@ const DetailedCountryElement = ({country}) => {
         {country.languages.map(lang => <li key={lang.name}>{lang.name}</li> )}
       </ul>
       <img src={country.flag} />
+
+      <h2>Weather in {country.name}</h2>
+      <p><strong>temperature:</strong> {temperature} Celcius</p>
+      <p><strong>wind:</strong> {wind_speed} mph direction {wind_direction}</p>
     </>
   );
 }
