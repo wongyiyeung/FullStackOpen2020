@@ -37,9 +37,9 @@ const DetailedCountryElement = ({country}) => {
 
   useEffect(()=>{
     axios
-      .get(`https://api.weatherstack.com/current`, 
+      .get(`http://api.weatherstack.com/current`, 
       {
-        header: {
+        params: {
           access_key: weather_api_key,
           query: country.name
         }
@@ -50,8 +50,9 @@ const DetailedCountryElement = ({country}) => {
         setWindspeed(response.data.current.wind_speed);
         setWindDirection(response.data.current.wind_dir);
       })
-  },[]);
+  },[country.name]);
   
+  let img_alt_attr = 'Flag of ' + country.name;
   return (
     <>
       <h1>{country.name}</h1>
@@ -62,7 +63,7 @@ const DetailedCountryElement = ({country}) => {
       <ul>
         {country.languages.map(lang => <li key={lang.name}>{lang.name}</li> )}
       </ul>
-      <img src={country.flag} />
+      <img src={country.flag} alt={img_alt_attr}/>
 
       <h2>Weather in {country.name}</h2>
       <p><strong>temperature:</strong> {temperature} Celcius</p>
