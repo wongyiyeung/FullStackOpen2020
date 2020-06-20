@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from 'react'
 import phonebook from './services/contacts'
+import ContactList from './components/Contact'
+import PersonForm from './components/Form'
 
 const Filter = ({onChange, value}) => {
   return (
@@ -10,24 +12,6 @@ const Filter = ({onChange, value}) => {
     </form>
   )
 }
-
-const PersonForm = ({submitHandler, nameChangeHandler, numberChangeHandler, newName, newNumber}) => {
-  return (
-    <form onSubmit={submitHandler}>
-    <div>
-      name: <input onChange={nameChangeHandler} value={newName}/>
-    </div>
-    <div>
-      number: <input onChange={numberChangeHandler} value={newNumber}/>
-    </div>
-    <div>
-      <button type="submit">add</button>
-    </div>
-  </form>
-  )
-}
-
-
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
@@ -51,23 +35,6 @@ const App = () => {
       .then(
         setPersons(persons.filter(p => p.id !== person.id))
       )
-  }
-
-  const Contact = ({person}) => {
-    return (
-      <>
-        <div>{person.name} {person.number} <button onClick={() => deleteContact(person)}>delete</button></div>
-      </>
-    )
-  }
-  
-  const ContactList = ({contactList, filter}) => {
-    const filteredContacts = contactList.filter(person => person.name.slice(0, filter.length).localeCompare(filter, 'en', {sensitivity: 'accent'}) === 0);  
-    return (
-    <>
-      {filteredContacts.map(person => <Contact key={person.name} person={person} />)}
-    </>
-    )
   }
 
   const submitNewContact = (event) => {
@@ -119,7 +86,7 @@ const App = () => {
       <h2>Add new contact</h2>
       <PersonForm submitHandler={submitNewContact} nameChangeHandler={changeName} numberChangeHandler={changeNumber} newName={newName} newNumber={newNumber} />
       <h2>Numbers</h2>
-      <ContactList contactList={persons} filter={filterName}/>
+      <ContactList contactList={persons} filter={filterName} deleteContactHandler={deleteContact}/>
     </div>
   )
 }
