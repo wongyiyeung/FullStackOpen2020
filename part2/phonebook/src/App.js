@@ -27,14 +27,7 @@ const PersonForm = ({submitHandler, nameChangeHandler, numberChangeHandler, newN
   )
 }
 
-const Persons = ({contactList, filter}) => {
-  const filteredContacts = contactList.filter(person => person.name.slice(0, filter.length).localeCompare(filter, 'en', {sensitivity: 'accent'}) === 0);
-  return (
-  <>
-    {filteredContacts.map(person => <p key={person.name}>{person.name} {person.number}</p>)}
-  </>
-  )
-}
+
 
 const App = () => {
   const [ persons, setPersons ] = useState([])
@@ -49,6 +42,33 @@ const App = () => {
         setPersons(allContacts);
       })
   },[]);
+
+  const deleteContact = (person) => {
+    if(window.confirm(`Delete ${person.name}?`) === false) return;
+
+    phonebook
+      .deleteContact(person.id)
+      .then(
+        setPersons(persons.filter(p => p.id !== person.id))
+      )
+  }
+
+  const Contact = ({person}) => {
+    return (
+      <>
+        <div>{person.name} {person.number} <button onClick={() => deleteContact(person)}>delete</button></div>
+      </>
+    )
+  }
+  
+  const ContactList = ({contactList, filter}) => {
+    const filteredContacts = contactList.filter(person => person.name.slice(0, filter.length).localeCompare(filter, 'en', {sensitivity: 'accent'}) === 0);  
+    return (
+    <>
+      {filteredContacts.map(person => <Contact key={person.name} person={person} />)}
+    </>
+    )
+  }
 
   const submitNewContact = (event) => {
     event.preventDefault()
@@ -93,7 +113,7 @@ const App = () => {
       <h2>Add new contact</h2>
       <PersonForm submitHandler={submitNewContact} nameChangeHandler={changeName} numberChangeHandler={changeNumber} newName={newName} newNumber={newNumber} />
       <h2>Numbers</h2>
-      <Persons contactList={persons} filter={filterName}/>
+      <ContactList contactList={persons} filter={filterName}/>
     </div>
   )
 }
