@@ -78,12 +78,18 @@ const App = () => {
 
     persons.forEach(p => {
       if (p.name === newContact.name){
-        window.alert(`${newContact.name} is already added to phonebook`);
         hasContact = true;
+        newContact.id = p.id;
+        if(window.confirm(`${newContact.name} is already added to phonebook, replace the old number with a new one?`) === false) return;
+
+        phonebook.updateContact(newContact)
+          .then(addedContact => {
+            setPersons(persons.map(p => p.name === addedContact.name ? newContact : p))
+          })
       }
     });
 
-    if(hasContact === false){
+    if(hasContact === false) {
       phonebook
         .addContact(newContact)
         .then(addedContact => {
