@@ -58,15 +58,19 @@ const App = () => {
     const newContact = {name: newName, number: newNumber};
     let hasContact = false;
 
-    for(let i=0; i<persons.length; ++i){
-      if(persons[i].name === newContact.name){
+    persons.forEach(p => {
+      if (p.name === newContact.name){
         window.alert(`${newContact.name} is already added to phonebook`);
         hasContact = true;
       }
-    }
+    });
 
     if(hasContact === false){
-      setPersons(persons.concat(newContact))
+      axios
+        .post('http://localhost:3001/persons', newContact)
+        .then(response => {
+          setPersons(persons.concat(response.data));
+        })
     }
     setNewNumber('');
     setNewName('');
