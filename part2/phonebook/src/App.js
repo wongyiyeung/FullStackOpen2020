@@ -2,6 +2,8 @@ import React, { useState, useEffect } from 'react'
 import phonebook from './services/contacts'
 import ContactList from './components/Contact'
 import PersonForm from './components/Form'
+import Notification from './components/Notification'
+import './index.css'
 
 const Filter = ({onChange, value}) => {
   return (
@@ -18,6 +20,7 @@ const App = () => {
   const [ newName, setNewName ] = useState('')
   const [ newNumber, setNewNumber ] = useState('');
   const [ filterName, setFilerName ] = useState('');
+  const [ notificationMessage, setNotificationMessage ] = useState(null);
 
   useEffect(()=>{
     phonebook
@@ -27,14 +30,22 @@ const App = () => {
       })
   },[]);
 
+  const sendNotification = (message) => {
+    setNotificationMessage(message)
+    setTimeout(() => {
+      setNotificationMessage(null);
+    }, 5000);
+  }
+
   const deleteContact = (person) => {
     if(window.confirm(`Delete ${person.name}?`) === false) return;
 
     phonebook
       .deleteContact(person.id)
-      .then(
+      .then(() => {
         setPersons(persons.filter(p => p.id !== person.id))
-      )
+        sendNotification(`Deleted ${person.name}`);
+      })
   }
 
   const submitNewContact = (event) => {
@@ -52,6 +63,7 @@ const App = () => {
         phonebook.updateContact(newContact)
           .then(addedContact => {
             setPersons(persons.map(p => p.name === addedContact.name ? newContact : p))
+            sendNotification(`Updated ${addedContact.name}`);
           })
       }
     });
@@ -61,6 +73,7 @@ const App = () => {
         .addContact(newContact)
         .then(addedContact => {
           setPersons(persons.concat(addedContact));
+          sendNotification(`Added ${newContact.name}`);
         })
     }
     setNewNumber('');
@@ -82,6 +95,7 @@ const App = () => {
   return (
     <div>
       <h2>Phonebook</h2>
+      <Notification message={notificationMessage}/>
       <Filter onChange={changeFilter} value={filterName}/>
       <h2>Add new contact</h2>
       <PersonForm submitHandler={submitNewContact} nameChangeHandler={changeName} numberChangeHandler={changeNumber} newName={newName} newNumber={newNumber} />
