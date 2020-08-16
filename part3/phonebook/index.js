@@ -11,7 +11,7 @@ let phonebook =
   {
     name: "Ada Lovelace",
     number: "39-44-5323523",
-    id: 4
+    id: 2
   },
   {
     name: "Dan Abramov",
@@ -31,6 +31,16 @@ app.get('/api/persons', (req, res) => {
 
 app.get('/info', (req, res) => {
   res.send(`<p>Phonebook has info for ${phonebook.length}</p><p>${Date()}</p>`)
+})
+
+app.get('/api/persons/:id', (req, res) => {
+  const contact = phonebook.find( contact => contact.id === Number(req.params.id))
+  if(contact) {
+    res.status(200).json(contact)
+  }
+  else {
+    res.status(404).end()
+  }
 })
 
 const PORT = 3001
