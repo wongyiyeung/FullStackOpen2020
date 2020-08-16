@@ -57,6 +57,11 @@ app.post('/api/persons', (req, res) => {
   if(body.name == null || body.number == null) {
     res.status(400).end()
   }
+  
+  const existingContact = phonebook.find(contact => contact.name === body.name)
+  if(existingContact) {
+    res.status(400).end()
+  }
 
   const contact = {
     id: getRandomId(1000),
