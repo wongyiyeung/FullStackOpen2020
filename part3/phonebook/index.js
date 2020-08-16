@@ -1,6 +1,7 @@
 const express = require('express')
 const app = express()
 
+app.use(express.json())
 let phonebook = 
 [
   {
@@ -25,6 +26,10 @@ let phonebook =
   }
 ]
 
+const getRandomId = (max) => {
+  return Math.floor(Math.random() * Math.floor(max))
+}
+
 app.get('/api/persons', (req, res) => {
   res.status(200).json(phonebook)
 })
@@ -41,6 +46,27 @@ app.get('/api/persons/:id', (req, res) => {
   else {
     res.status(404).end()
   }
+})
+
+app.post('/api/persons', (req, res) => {
+  if(req.body.constructor === Object && Object.keys(req.body).length === 0) {
+    res.status(400).end()
+  }
+  const body = req.body
+
+  if(body.name == null || body.number == null) {
+    res.status(400).end()
+  }
+
+  const contact = {
+    id: getRandomId(1000),
+    name: body.name,
+    number: body.number
+  }
+
+  phonebook = phonebook.concat(contact)
+  res.status(200).end()
+
 })
 
 app.delete('/api/persons/:id', (req, res) => {
