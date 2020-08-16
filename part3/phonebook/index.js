@@ -50,17 +50,21 @@ app.get('/api/persons/:id', (req, res) => {
 
 app.post('/api/persons', (req, res) => {
   if(req.body.constructor === Object && Object.keys(req.body).length === 0) {
-    res.status(400).end()
+    res.status(400).json({error: 'object is empty!'})
   }
   const body = req.body
 
-  if(body.name == null || body.number == null) {
-    res.status(400).end()
+  if(body.name == null) {
+    res.status(400).json({error: 'name field is empty!'})
   }
   
+  if(body.number == null) {
+    res.status(400).json({error: 'number field is empty!'})
+  }
+
   const existingContact = phonebook.find(contact => contact.name === body.name)
   if(existingContact) {
-    res.status(400).end()
+    res.status(400).json({error: 'name must be unique!'})
   }
 
   const contact = {
