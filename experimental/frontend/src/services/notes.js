@@ -1,5 +1,5 @@
 import axios from 'axios'
-const baseUrl = 'http://notetaking-app-backend.herokuapp.com/api/notes'
+const baseUrl = 'https://notetaking-app-backend.herokuapp.com/api/notes'
 
 const getAll = () => {
   const nonExisting = {
